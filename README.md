@@ -42,5 +42,8 @@ You will be judged based on the following:
 6. I follow design pattern.
 7. I have also created viewmodel for productlist select items(optional).
 8. Please note that I am using Visual Studio 2017. You might need to update packages.
+9.You might get roslyn comiler error . please use following command to solve it.
+Update-Package Microsoft.CodeDom.Providers.DotNetCompilerPlatform -r
+
 --------------------------------------------------------------------------------------------------------------------------
 
