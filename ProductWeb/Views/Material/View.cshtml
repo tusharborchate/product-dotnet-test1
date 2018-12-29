@@ -1,0 +1,151 @@
+﻿@model Product.DomainObjects.ViewModels.MaterialViewModel
+@{
+    ViewBag.Title = "Material";
+}
+<div class="row">
+    <div class="col-md-12">
+        <h2>@Model.MaterialModel.Name</h2>
+    </div>
+    <div class="col-md-12">
+        <div>
+            ID: $@Model.MaterialModel.MaterialId
+        </div>
+    </div>
+
+    <div class="col-md-12">
+        <div>
+            Cost: $@Model.MaterialModel.Cost
+        </div>
+    </div>
+    <div class="mergeDiv">
+        <div class="col-md-6 margeMaterialListDiv">
+            @Html.DropDownListFor(m => m.MergeMaterialId, Model.MergeMaterialList, new { @class = "form-control", @id = "mergeMaterialList" })
+        </div>
+        <div class="col-md-12">
+            <button id="merge" disabled class="btn btn-warning" data-toggle="modal" data-target="#confirmModal">Merge</button>
+        </div>
+
+    </div>
+</div>
+<div class="modal" tabindex="-1" id="confirmModal" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Please Confirm</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>You cannnot rollback this activity. Please confirm before proceed.</p>
+
+                <p id="load" style="display:none;">Please wait....</p>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="confirm">Confirm</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal" tabindex="-1" id="resultModal" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Merge Result</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <label id="resultText"></label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="ok" data-dismiss="modal" class="btn btn-primary">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+@*<p>
+
+        Please implement a Merge functionality from here.
+    </p>*@
+<style>
+
+    #merge {
+    }
+
+    .margeMaterialListDiv {
+        margin: 10px 0;
+    }
+
+    .mergeDiv {
+        border: 1px solid;
+        overflow: auto;
+        padding: 10px;
+    }
+</style>
+<script type="text/javascript">
+
+    var materialToDelete; var materialToDeleteName;var materialToKeepName;
+    var materialToKeep = @Html.Raw(Json.Encode(Model.MaterialModel.MaterialId));
+      materialToKeepName=@Html.Raw(Json.Encode(Model.MaterialModel.Name));
+    //enable/disable button if material selected
+
+    $('#mergeMaterialList').change(function () {
+
+        materialToDelete = $('#mergeMaterialList').val();
+        materialToDeleteName = $('#mergeMaterialList :selected').text();
+
+
+        if (materialToDelete == 0) {
+            $('#merge').attr('disabled','disabled');
+            return false;
+        }
+        else {
+            $('#merge').removeAttr('disabled');
+
+
+        }
+    });
+
+
+    //ajax call to merge material
+
+    $('#confirm').click(function () {
+        $('#load').show();
+
+        $.ajax({
+
+            type: "GET",
+            url: '@Url.Action("MergeMaterial", "Material")',
+            contentType: "application/json; charset=utf-8",
+            data: { 'materialToKeep': materialToKeep, 'materialToDelete': materialToDelete },
+            dataType: "json",
+            success: function (recData) {
+                $('#resultText').text("We have merged " + materialToDeleteName + " into " + materialToKeepName + ". Please note that we have also deleted " + materialToDeleteName + " from our system.");
+                $('#confirmModal').modal('hide');
+
+                $('#resultModal').modal('show');
+            },
+            error: function () {
+                $('#resultText').text("We cannot merge the material at the moment.");
+                $('#confirmModal').modal('hide');
+
+                $('#resultModal').modal('show');
+
+
+            }
+        })
+
+    });
+
+    $('#ok').click(function () {
+        $('#resultModal').modal('hide');
+        window.location='@Url.Action("Index","Material")';
+    });
+
+</script>

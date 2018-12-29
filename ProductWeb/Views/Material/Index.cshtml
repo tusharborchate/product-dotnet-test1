@@ -1,0 +1,41 @@
+﻿@model System.Collections.Generic.IList<Product.DomainObjects.Models.MaterialModel>
+
+@{
+    ViewBag.Title = "Materials";
+}
+
+<h2>Materials</h2>
+
+<table class="table table-striped">
+    <tr>
+        <td>
+            ID
+        </td>
+        <th>
+            Material
+        </th>
+        <th>
+            Cost
+        </th>
+        <th>
+            @*actions*@
+        </th>
+    </tr>
+    @foreach (var m in Model)
+    {
+        <tr>
+            <td>
+                @m.MaterialId
+            </td>
+            <td>
+                @m.Name
+            </td>
+            <td>
+                @m.Cost
+            </td>
+            <td>
+                @Html.ActionLink("view", "View", new {id = m.MaterialId})
+            </td>
+        </tr>
+    }
+</table>

@@ -1,0 +1,29 @@
+﻿@model Product.DomainObjects.Models.ProductModel
+
+@{
+    ViewBag.Title = "Product";
+}
+
+<h2>@Model.Name</h2>
+
+<div>
+    ID: $@Model.ProductId
+</div>
+<div>
+    Price: $@Model.Price
+</div>
+
+<h3>Materials</h3>
+<p>
+    Materials used to create this product.
+</p>
+<td>
+    <ul>
+        @foreach (var m in Model.Materials)
+        {
+            <li>
+                @String.Format("{0} x {1} [MaterialId = {2}]", m.Quantity, m.MaterialName, m.MaterialId)
+            </li>
+        }
+    </ul>
+</td>
